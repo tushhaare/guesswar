@@ -183,6 +183,15 @@ createBtn.onclick = async ()=>{
   roomId = generateRoomCode();
 
   myRole = "player1";
+  localStorage.setItem(
+  "bullsRoom",
+  roomId
+);
+
+localStorage.setItem(
+  "bullsRole",
+  myRole
+);
 
   await set(
     ref(db, "bullsRooms/" + roomId),
@@ -238,7 +247,16 @@ joinBtn.onclick = async ()=>{
   }
 
   myRole = "player2";
+localStorage.setItem(
+  "bullsRoom",
+  roomId
+);
 
+localStorage.setItem(
+  "bullsRole",
+  myRole
+);
+  
   await update(
     ref(db, "bullsRooms/" + roomId),
     {
@@ -342,6 +360,7 @@ readyBtn.onclick = async ()=>{
       secret:secret,
       attempts:0,
       ready:true,
+      online:true,
       rematch:false
     }
   );
@@ -392,6 +411,20 @@ guessBtn.onclick = async ()=>{
     return;
   }
 
+  const opponentData =
+  myRole === "player1"
+  ? data.player2
+  : data.player1;
+
+if(opponentData){
+
+  if(opponentData.online === false){
+
+    turnBox.innerText =
+      "Opponent Disconnected";
+  }
+}
+  
   const opponent =
     myRole === "player1"
     ? data.player2
@@ -770,3 +803,93 @@ if(inviteRoom){
 
   },500);
 }
+
+window.addEventListener(
+  "beforeunload",
+  async ()=>{
+
+    const savedRoom =
+      localStorage.getItem(
+        "bullsRoom"
+      );
+
+    const savedRole =
+      localStorage.getItem(
+        "bullsRole"
+      );
+
+    if(savedRoom && savedRole){
+
+      await update(
+        ref(
+          db,
+          "bullsRooms/" +
+          savedRoom +
+          "/" +
+          savedRole
+        ),
+        {
+          online:false
+        }
+      );
+    }
+  }
+);
+
+const savedRoom =
+  localStorage.getItem(
+    "bullsRoom"
+  );
+
+const savedRole =
+  localStorage.getItem(
+    "bullsRole"
+  );
+
+if(savedRoom && savedRole){
+
+  roomId = savedRoom;
+
+  myRole = savedRole;
+
+  update(
+    ref(
+      db,
+      "bullsRooms/" +
+      roomId +
+      "/" +
+      myRole
+    ),
+    {
+      online:true
+    }
+  );
+
+  listenRoom();
+
+  get(
+    ref(
+      db,
+      "bullsRooms/" + roomId
+    )
+  ).then(snapshot=>{
+
+    const data = snapshot.val();
+
+    if(!data) return;
+
+    if(
+      data.state === "playing" ||
+      data.state === "ended"
+    ){
+
+      showScreen("game");
+    }
+
+    else{
+
+      showScreen("secret");
+    }
+  });
+}
+
