@@ -487,6 +487,40 @@ guessBtn.onclick = async ()=>{
       opponent.secret
     );
 
+const opponentProgressKey =
+  myRole === "player1"
+  ? "player2Progress"
+  : "player1Progress";
+
+const oldProgress =
+  data[opponentProgressKey]
+  || "_ _ _ _";
+
+const currentReveal =
+  oldProgress.split(" ");
+
+for(let i=0; i<4; i++){
+
+  if(
+    guess[i] === opponent.secret[i]
+  ){
+
+    currentReveal[i] =
+      guess[i];
+  }
+}
+
+await update(
+  ref(
+    db,
+    "bullsRooms/" + roomId
+  ),
+  {
+    [opponentProgressKey]:
+      currentReveal.join(" ")
+  }
+);
+  
   /* UPDATE PATTERN */
 
   const pattern =
@@ -696,6 +730,20 @@ function listenRoom(){
 
       if(!data) return;
 
+if(myRole === "player1"){
+
+  opponentPattern.innerText =
+    data.player1Progress
+    || "_ _ _ _";
+}
+
+else{
+
+  opponentPattern.innerText =
+    data.player2Progress
+    || "_ _ _ _";
+}
+      
       /* PLAYER JOINED */
 
       if(
