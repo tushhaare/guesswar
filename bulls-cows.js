@@ -352,7 +352,6 @@ readyBtn.onclick = async ()=>{
       secret:secret,
       attempts:0,
       ready:true,
-      online:true,
       rematch:false
     }
   );
@@ -408,19 +407,6 @@ guessBtn.onclick = async ()=>{
     myRole === "player1"
     ? data.player2
     : data.player1;
-
-if(opponent){
-
-  if(opponent.online === false){
-
-    turnBox.innerText =
-      "Opponent Disconnected";
-
-    guessBtn.disabled = true;
-
-    return;
-  }
-}
   
   const me =
     myRole === "player1"
@@ -784,14 +770,12 @@ function listenRoom(){
               ready:false,
               attempts:0,
               rematch:false,
-           online:true
 },
 
 player2:{
   ready:false,
   attempts:0,
   rematch:false,
-  online:true
 }
           }
         );
