@@ -13,6 +13,8 @@ import {
 /* ELEMENTS */
 /* ------------------------- */
 
+const opponentPattern = document.getElementById( "opponentPattern" );
+
 const screens = {
   home: document.getElementById("homeScreen"),
   waiting: document.getElementById("waitingScreen"),
