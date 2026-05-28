@@ -581,3 +581,24 @@ button:active{
 
   font-size:18px;
 }
+
+.game-menu{
+
+  display:flex;
+
+  gap:10px;
+
+  margin-bottom:20px;
+}
+
+.game-menu button{
+
+  margin-top:0;
+
+  background:#1e293b;
+}
+
+#leaveBtn{
+
+  background:#7f1d1d;
+}
