@@ -88,13 +88,19 @@ createBtn.onclick = async ()=>{
   myRole = "player1";
 
   await set(
-    ref(db, "rooms/" + roomId),
-    {
-      state:"waiting",
-      turn:null,
-      winner:null
+  ref(db, "rooms/" + roomId),
+  {
+    state:"waiting",
+    turn:null,
+    winner:null,
+
+    player1:{
+      ready:false,
+      attempts:0,
+      rematch:false
     }
-  );
+  }
+);
 
   roomCodeBox.innerText = roomId;
 
@@ -128,11 +134,17 @@ joinBtn.onclick = async ()=>{
   myRole = "player2";
 
   await update(
-    ref(db, "rooms/" + roomId),
-    {
-      state:"choosing"
+  ref(db, "rooms/" + roomId),
+  {
+    state:"choosing",
+
+    player2:{
+      ready:false,
+      attempts:0,
+      rematch:false
     }
-  );
+  }
+);
 
   showScreen("secret");
 
@@ -380,6 +392,8 @@ function listenRoom(){
 
       if(data.state === "playing"){
 
+        if(!data.turn) return;
+        
         showScreen("game");
       }
 
