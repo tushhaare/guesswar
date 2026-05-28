@@ -66,10 +66,6 @@ const resultText = document.getElementById("resultText");
 
 const playAgainBtn = document.getElementById("playAgainBtn");
 
-  const restartBtn =
-  document.getElementById(
-    "restartBtn"
-  );
 
 const leaveBtn =
   document.getElementById(
@@ -904,7 +900,23 @@ if(savedRoom && savedRole){
 }
 
 
-leaveBtn.onclick = ()=>{
+leaveBtn.onclick = async ()=>{
+
+  if(roomId && myRole){
+
+    await update(
+      ref(
+        db,
+        "bullsRooms/" +
+        roomId +
+        "/" +
+        myRole
+      ),
+      {
+        online:false
+      }
+    );
+  }
 
   localStorage.removeItem(
     "bullsRoom"
@@ -917,38 +929,6 @@ leaveBtn.onclick = ()=>{
   window.location.href =
     "/guesswar/bulls-cows.html";
 };
-
-restartBtn.onclick = async ()=>{
-
-  await update(
-    ref(
-      db,
-      "bullsRooms/" + roomId
-    ),
-    {
-      state:"choosing",
-
-      turn:null,
-
-      winner:null,
-
-      history:[],
-
-      player1:{
-        ready:false,
-        attempts:0,
-        rematch:false,
-        online:true
-      },
-
-      player2:{
-        ready:false,
-        attempts:0,
-        rematch:false,
-        online:true
-      }
-    }
-  );
 
   gameEnded = false;
 
