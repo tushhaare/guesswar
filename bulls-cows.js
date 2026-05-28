@@ -454,6 +454,10 @@ guessBtn.onclick = async ()=>{
   const data =
     snapshot.val();
 
+  if(!data) return;
+
+  /* TURN CHECK */
+
   if(data.turn !== myRole){
 
     resultBox.innerText =
@@ -481,25 +485,7 @@ guessBtn.onclick = async ()=>{
       opponent.secret
     );
 
-  /* UPDATE ATTEMPTS */
-
-  await update(
-    ref(
-      db,
-      "bullsRooms/" +
-      roomId +
-      "/" +
-      myRole
-    ),
-    {
-      attempts:attempts
-    }
-  );
-
-  myAttempts.innerText =
-    attempts;
-
-  /* PATTERN */
+  /* UPDATE PATTERN */
 
   const pattern =
     generatePattern(
@@ -526,7 +512,7 @@ guessBtn.onclick = async ()=>{
   patternBox.innerText =
     currentPattern.join(" ");
 
-  /* COWS */
+  /* COWS RESULT */
 
   if(result.cows > 0){
 
@@ -560,6 +546,42 @@ guessBtn.onclick = async ()=>{
     cows:result.cows
   });
 
+  /* WIN CONDITION */
+
+  if(result.bulls === 4){
+
+    gameEnded = true;
+
+    await update(
+      ref(
+        db,
+        "bullsRooms/" + roomId
+      ),
+      {
+        history:history,
+
+        winner:myRole,
+
+        state:"ended",
+
+        [`${myRole}/attempts`]:
+          attempts
+      }
+    );
+
+    myAttempts.innerText =
+      attempts;
+
+    showResult(
+      true,
+      attempts
+    );
+
+    return;
+  }
+
+  /* NORMAL TURN SWITCH */
+
   await update(
     ref(
       db,
@@ -575,31 +597,27 @@ guessBtn.onclick = async ()=>{
     }
   );
 
-  /* WIN */
+  /* UPDATE ATTEMPTS SEPARATELY */
 
-  if(result.bulls === 4){
+  await update(
+    ref(
+      db,
+      "bullsRooms/" +
+      roomId +
+      "/" +
+      myRole
+    ),
+    {
+      attempts:attempts
+    }
+  );
 
-    gameEnded = true;
-
-    await update(
-      ref(
-        db,
-        "bullsRooms/" + roomId
-      ),
-      {
-        state:"ended",
-        winner:myRole
-      }
-    );
-
-    showResult(
-      true,
-      attempts
-    );
-  }
+  myAttempts.innerText =
+    attempts;
 
   guessInput.value = "";
 };
+
 
 /* ------------------------- */
 /* RESULT */
@@ -716,26 +734,24 @@ function listenRoom(){
 
       if(data.state === "playing"){
 
-        showScreen("game");
-      }
+  showScreen("game");
 
-      /* TURN */
+  if(data.turn === myRole){
 
-      if(data.turn === myRole){
+    turnBox.innerText =
+      "YOUR TURN";
 
-        turnBox.innerText =
-          "YOUR TURN";
+    guessBtn.disabled = false;
+  }
 
-        guessBtn.disabled = false;
-      }
+  else{
 
-      else{
+    turnBox.innerText =
+      "OPPONENT TURN";
 
-        turnBox.innerText =
-          "OPPONENT TURN";
-
-        guessBtn.disabled = true;
-      }
+    guessBtn.disabled = true;
+  }
+}
 
       /* ATTEMPTS */
 
