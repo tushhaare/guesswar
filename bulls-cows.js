@@ -46,6 +46,11 @@ const myAttempts = document.getElementById("myAttempts");
 
 const enemyAttempts = document.getElementById("enemyAttempts");
 
+const mySecretNumber =
+  document.getElementById(
+    "mySecretNumber"
+  );
+
 const historyList = document.getElementById("historyList");
 
 const resultModal = document.getElementById("resultModal");
@@ -268,6 +273,8 @@ readyBtn.onclick = async ()=>{
 
   readyStatus.innerText =
     "Waiting for opponent...";
+  mySecretNumber.innerText =
+  secret;
 };
 
 /* ------------------------- */
@@ -552,14 +559,24 @@ function listenRoom(){
             );
 
             div.innerHTML = `
-              <span>
-                ${item.guess}
-              </span>
 
-              <span class="history-result">
-                ${item.bulls}B • ${item.cows}C
-              </span>
-            `;
+  <span class="guess-number">
+    ${item.guess}
+  </span>
+
+  <div class="result-badges">
+
+    <div class="bull-box">
+      🟩 ${item.bulls}
+    </div>
+
+    <div class="cow-box">
+      🟧 ${item.cows}
+    </div>
+
+  </div>
+
+`;
 
             historyList.appendChild(div);
           });
