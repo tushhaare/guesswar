@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Guess the Number Game by Hero No. 1 TUSHAR</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  />
+</head>
+
+<body>
+
+  <div class="background-glow"></div>
+
+  <div class="app">
+
+    <!-- LANDING SCREEN -->
+
+    <section
+      id="homeScreen"
+      class="screen active"
+    >
+
+      <div class="logo-box">
+        <h1>Guess the Number Game by Hero No. 1 TUSHAR</h1>
+
+        <p>
+          This game is built by TUSHAR as a grand gesture of love for his beloved Girl, JYOTI JAIN.
+        </p>
+      </div>
+
+      <div class="card">
+
+        <button id="createBtn">
+          Create Room
+        </button>
+
+        <div class="divider">
+          OR
+        </div>
+
+        <input
+          type="text"
+          id="roomInput"
+          placeholder="Enter Room Code"
+          maxlength="5"
+        />
+
+        <button id="joinBtn">
+          Join Room
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- WAITING SCREEN -->
+
+    <section
+      id="waitingScreen"
+      class="screen"
+    >
+
+      <div class="card center">
+
+        <h2>ROOM CREATED</h2>
+
+        <div id="roomCodeBox">
+          XXXXX
+        </div>
+
+        <button id="copyBtn">
+          Copy Room Code
+        </button>
+
+        <div class="loader"></div>
+
+        <p id="waitingText">
+          Waiting for opponent...
+        </p>
+
+      </div>
+
+    </section>
+
+    <!-- SECRET NUMBER SCREEN -->
+
+    <section
+      id="secretScreen"
+      class="screen"
+    >
+
+      <div class="card">
+
+        <h2>
+          Choose Secret Number
+        </h2>
+
+        <p class="subtitle">
+          Select a number between 1 and 9999
+        </p>
+
+        <input
+          type="number"
+          id="secretInput"
+          min="1"
+          max="9999"
+          placeholder="Enter Secret Number"
+        />
+
+        <button id="readyBtn">
+          READY
+        </button>
+
+        <p id="readyStatus"></p>
+
+      </div>
+
+    </section>
+
+    <!-- GAME SCREEN -->
+
+    <section
+      id="gameScreen"
+      class="screen"
+    >
+
+      <div class="top-bar">
+
+        <div class="stat-card">
+          <span>Your Attempts</span>
+          <h3 id="myAttempts">
+            0
+          </h3>
+        </div>
+
+        <div class="stat-card">
+          <span>Opponent Attempts</span>
+          <h3 id="enemyAttempts">
+            0
+          </h3>
+        </div>
+
+      </div>
+
+      <div class="main-card">
+
+        <h2>
+          Chalo mera number guess kar!
+        </h2>
+
+        <div id="turnBox">
+  Waiting...
+</div>
+
+<div id="hintBox">
+  Make your guess
+</div>
+
+        <input
+          type="number"
+          id="guessInput"
+          placeholder="Enter Guess"
+        />
+
+        <button id="guessBtn">
+          GUESS
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- WINNER MODAL -->
+
+  <div
+    id="resultModal"
+    class="modal hidden"
+  >
+
+    <div class="modal-content">
+
+      <h1 id="resultTitle">
+        JEET GAYE AAP!
+      </h1>
+
+      <p id="resultText">
+        Great job!
+      </p>
+
+      <button id="playAgainBtn">
+        PLAY AGAIN
+      </button>
+
+    </div>
+
+  </div>
+
+  <script
+    type="module"
+    src="script.js"
+  ></script>
+
+</body>
+
+</html>

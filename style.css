@@ -1,0 +1,399 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial, sans-serif;
+  background:#020617;
+  color:white;
+  min-height:100vh;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+/* BACKGROUND GLOW */
+
+.background-glow{
+  position:absolute;
+  width:700px;
+  height:700px;
+  background:radial-gradient(
+    circle,
+    rgba(56,189,248,0.18),
+    transparent 70%
+  );
+  z-index:0;
+}
+
+/* APP */
+
+.app{
+  width:100%;
+  max-width:460px;
+  padding:20px;
+  position:relative;
+  z-index:2;
+}
+
+/* SCREENS */
+
+.screen{
+  display:none;
+  animation:fade 0.35s ease;
+}
+
+.screen.active{
+  display:block;
+}
+
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* LOGO */
+
+.logo-box{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.logo-box h1{
+  font-size:52px;
+  color:#38bdf8;
+  letter-spacing:2px;
+  margin-bottom:10px;
+}
+
+.logo-box p{
+  color:#94a3b8;
+  font-size:15px;
+}
+
+/* CARD */
+
+.card,
+.main-card{
+  background:rgba(15,23,42,0.72);
+
+  backdrop-filter:blur(15px);
+
+  border:1px solid rgba(255,255,255,0.06);
+
+  border-radius:24px;
+
+  padding:25px;
+
+  box-shadow:
+    0 0 30px rgba(0,0,0,0.35);
+}
+
+.card.center{
+  text-align:center;
+}
+
+/* INPUTS */
+
+input{
+  width:100%;
+  padding:16px;
+  margin-top:15px;
+
+  border:none;
+
+  border-radius:16px;
+
+  background:#0f172a;
+
+  color:white;
+
+  font-size:16px;
+
+  outline:none;
+
+  border:1px solid transparent;
+
+  transition:0.3s;
+}
+
+input:focus{
+  border-color:#38bdf8;
+}
+
+/* BUTTONS */
+
+button{
+  width:100%;
+
+  padding:16px;
+
+  margin-top:15px;
+
+  border:none;
+
+  border-radius:16px;
+
+  background:#38bdf8;
+
+  color:white;
+
+  font-size:16px;
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+  transition:0.25s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+
+  opacity:0.95;
+}
+
+button:active{
+  transform:scale(0.98);
+}
+
+/* DIVIDER */
+
+.divider{
+  text-align:center;
+  margin:18px 0;
+  color:#64748b;
+}
+
+/* ROOM CODE */
+
+#roomCodeBox{
+  font-size:42px;
+
+  font-weight:bold;
+
+  margin-top:20px;
+
+  letter-spacing:5px;
+
+  color:#38bdf8;
+}
+
+/* LOADER */
+
+.loader{
+  width:60px;
+  height:60px;
+
+  border-radius:50%;
+
+  border:4px solid rgba(255,255,255,0.08);
+
+  border-top:4px solid #38bdf8;
+
+  margin:30px auto;
+
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  100%{
+    transform:rotate(360deg);
+  }
+}
+
+/* TEXT */
+
+.subtitle{
+  margin-top:10px;
+  color:#94a3b8;
+}
+
+#readyStatus{
+  margin-top:15px;
+  color:#38bdf8;
+  text-align:center;
+}
+
+/* TOP BAR */
+
+.top-bar{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:15px;
+
+  margin-bottom:20px;
+}
+
+.stat-card{
+  background:rgba(15,23,42,0.72);
+
+  border-radius:20px;
+
+  padding:20px;
+
+  text-align:center;
+
+  border:1px solid rgba(255,255,255,0.05);
+}
+
+.stat-card span{
+  color:#94a3b8;
+  font-size:14px;
+}
+
+.stat-card h3{
+  margin-top:10px;
+  font-size:28px;
+  color:#38bdf8;
+}
+
+/* GAME */
+
+.main-card{
+  text-align:center;
+}
+
+.main-card h2{
+  margin-bottom:25px;
+}
+
+#hintBox{
+  background:#0f172a;
+
+  border-radius:18px;
+
+  padding:18px;
+
+  margin-bottom:20px;
+
+  font-size:20px;
+
+  font-weight:bold;
+
+  color:#38bdf8;
+}
+
+#turnBox{
+  background:#38bdf8;
+
+  color:white;
+
+  padding:14px;
+
+  border-radius:16px;
+
+  margin-bottom:15px;
+
+  font-weight:bold;
+
+  text-align:center;
+
+  font-size:18px;
+
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+
+  0%{
+    opacity:1;
+  }
+
+  50%{
+    opacity:0.7;
+  }
+
+  100%{
+    opacity:1;
+  }
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+
+  inset:0;
+
+  background:rgba(0,0,0,0.7);
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  z-index:99;
+}
+
+.hidden{
+  display:none;
+}
+
+.modal-content{
+  width:90%;
+  max-width:350px;
+
+  background:#0f172a;
+
+  border-radius:28px;
+
+  padding:35px;
+
+  text-align:center;
+
+  animation:popup 0.3s ease;
+}
+
+@keyframes popup{
+  from{
+    transform:scale(0.85);
+    opacity:0;
+  }
+
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+.modal-content h1{
+  font-size:42px;
+  color:#38bdf8;
+  margin-bottom:15px;
+}
+
+.modal-content p{
+  color:#cbd5e1;
+}
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+  .logo-box h1{
+    font-size:42px;
+  }
+
+  #roomCodeBox{
+    font-size:34px;
+  }
+
+  .top-bar{
+    grid-template-columns:1fr;
+  }
+
+}
