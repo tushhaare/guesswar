@@ -372,6 +372,32 @@ button:active{
   }
 }
 
+#patternBox{
+
+  background:#0f172a;
+
+  border:2px solid #38bdf8;
+
+  border-radius:20px;
+
+  padding:22px;
+
+  margin-bottom:20px;
+
+  font-size:42px;
+
+  letter-spacing:12px;
+
+  font-weight:bold;
+
+  text-align:center;
+
+  color:#4ade80;
+
+  box-shadow:
+    0 0 20px rgba(74,222,128,0.15);
+}
+
 /* RESULT BOX */
 
 #resultBox{
@@ -421,9 +447,18 @@ button:active{
 }
 
 .history-result{
-  color:#38bdf8;
+
+  background:#7c2d12;
+
+  color:#fdba74;
+
+  padding:8px 12px;
+
+  border-radius:12px;
 
   font-weight:bold;
+
+  font-size:14px;
 }
 
 /* MODAL */
