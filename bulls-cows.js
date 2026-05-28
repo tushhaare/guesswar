@@ -66,6 +66,16 @@ const resultText = document.getElementById("resultText");
 
 const playAgainBtn = document.getElementById("playAgainBtn");
 
+  const restartBtn =
+  document.getElementById(
+    "restartBtn"
+  );
+
+const leaveBtn =
+  document.getElementById(
+    "leaveBtn"
+  );
+
 /* ------------------------- */
 /* VARIABLES */
 /* ------------------------- */
@@ -893,3 +903,76 @@ if(savedRoom && savedRole){
   });
 }
 
+
+leaveBtn.onclick = ()=>{
+
+  localStorage.removeItem(
+    "bullsRoom"
+  );
+
+  localStorage.removeItem(
+    "bullsRole"
+  );
+
+  window.location.href =
+    "/guesswar/bulls-cows.html";
+};
+
+restartBtn.onclick = async ()=>{
+
+  await update(
+    ref(
+      db,
+      "bullsRooms/" + roomId
+    ),
+    {
+      state:"choosing",
+
+      turn:null,
+
+      winner:null,
+
+      history:[],
+
+      player1:{
+        ready:false,
+        attempts:0,
+        rematch:false,
+        online:true
+      },
+
+      player2:{
+        ready:false,
+        attempts:0,
+        rematch:false,
+        online:true
+      }
+    }
+  );
+
+  gameEnded = false;
+
+  resultModal.classList.add(
+    "hidden"
+  );
+
+  historyList.innerHTML = "";
+
+  myAttempts.innerText = "0";
+
+  enemyAttempts.innerText = "0";
+
+  resultBox.innerText =
+    "No guesses yet";
+
+  patternBox.innerText =
+    "_ _ _ _";
+
+  secretInput.disabled = false;
+
+  readyBtn.disabled = false;
+
+  readyStatus.innerText = "";
+
+  showScreen("secret");
+};
