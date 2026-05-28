@@ -506,3 +506,43 @@ button:active{
   }
 
 }
+
+.result-badges{
+
+  display:flex;
+
+  gap:10px;
+}
+
+.bull-box,
+.cow-box{
+
+  padding:8px 12px;
+
+  border-radius:12px;
+
+  font-weight:bold;
+
+  font-size:14px;
+}
+
+.bull-box{
+
+  background:#14532d;
+
+  color:#86efac;
+}
+
+.cow-box{
+
+  background:#7c2d12;
+
+  color:#fdba74;
+}
+
+.guess-number{
+
+  font-weight:bold;
+
+  font-size:18px;
+}
