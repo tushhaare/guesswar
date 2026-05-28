@@ -1,4 +1,4 @@
-import { db, currentUser } from "./firebase-config.js";
+import { db } from "./firebase-config.js";
 
 import {
   ref,
@@ -23,45 +23,33 @@ const createBtn = document.getElementById("createBtn");
 const joinBtn = document.getElementById("joinBtn");
 
 const roomInput = document.getElementById("roomInput");
-
 const roomCodeBox = document.getElementById("roomCodeBox");
-
 const copyBtn = document.getElementById("copyBtn");
 
 const secretInput = document.getElementById("secretInput");
-
 const readyBtn = document.getElementById("readyBtn");
-
 const readyStatus = document.getElementById("readyStatus");
 
 const guessInput = document.getElementById("guessInput");
-
 const guessBtn = document.getElementById("guessBtn");
 
 const hintBox = document.getElementById("hintBox");
-
 const turnBox = document.getElementById("turnBox");
 
 const myAttempts = document.getElementById("myAttempts");
-
 const enemyAttempts = document.getElementById("enemyAttempts");
 
 const resultModal = document.getElementById("resultModal");
-
 const resultTitle = document.getElementById("resultTitle");
-
 const resultText = document.getElementById("resultText");
-
 const playAgainBtn = document.getElementById("playAgainBtn");
 
 /* ------------------------- */
-/* GAME VARIABLES */
+/* VARIABLES */
 /* ------------------------- */
 
 let roomId = "";
-
 let myRole = "";
-
 let gameEnded = false;
 
 /* ------------------------- */
@@ -78,6 +66,18 @@ function showScreen(screenName){
 }
 
 /* ------------------------- */
+/* ROOM CODE */
+/* ------------------------- */
+
+function generateRoomCode(){
+
+  return Math.random()
+    .toString(36)
+    .substring(2,7)
+    .toUpperCase();
+}
+
+/* ------------------------- */
 /* CREATE ROOM */
 /* ------------------------- */
 
@@ -90,7 +90,9 @@ createBtn.onclick = async ()=>{
   await set(
     ref(db, "rooms/" + roomId),
     {
-      state:"waiting"
+      state:"waiting",
+      turn:null,
+      winner:null
     }
   );
 
@@ -124,8 +126,6 @@ joinBtn.onclick = async ()=>{
   }
 
   myRole = "player2";
-
-  roomCodeBox.innerText = roomId;
 
   await update(
     ref(db, "rooms/" + roomId),
@@ -183,8 +183,7 @@ readyBtn.onclick = async ()=>{
 
   readyBtn.disabled = true;
 
-  readyStatus.innerText =
-    "Waiting for opponent...";
+  readyStatus.innerText = "Waiting for opponent...";
 };
 
 /* ------------------------- */
@@ -194,21 +193,12 @@ readyBtn.onclick = async ()=>{
 guessBtn.onclick = async ()=>{
 
   if(gameEnded) return;
-  const roomSnapshot = await get(
-  ref(db, "rooms/" + roomId)
-);
-
-const roomData = roomSnapshot.val();
-
-if(roomData.turn !== myRole){
-
-  hintBox.innerText =
-    "WAIT FOR YOUR TURN";
-
-  return;
-}
 
   const guess = Number(guessInput.value);
+
+  if(!guess){
+    return;
+  }
 
   const snapshot = await get(
     ref(db, "rooms/" + roomId)
@@ -216,7 +206,12 @@ if(roomData.turn !== myRole){
 
   const data = snapshot.val();
 
+  if(data.turn !== myRole){
 
+    hintBox.innerText = "WAIT FOR YOUR TURN";
+
+    return;
+  }
 
   const opponent =
     myRole === "player1"
@@ -232,59 +227,59 @@ if(roomData.turn !== myRole){
     return;
   }
 
-  let attempts = me.attempts + 1;
+  const attempts = (me.attempts || 0) + 1;
 
   await update(
-  ref(db, "rooms/" + roomId + "/" + myRole),
-  {
-    attempts:attempts,
-    lastGuess:guess
-  }
-);
+    ref(db, "rooms/" + roomId + "/" + myRole),
+    {
+      attempts:attempts,
+      lastGuess:guess
+    }
+  );
 
   myAttempts.innerText = attempts;
 
   if(guess > opponent.secret){
 
-  hintBox.innerText = "LOWER";
-
-  await update(
-    ref(db, "rooms/" + roomId),
-    {
-      turn:
-        myRole === "player1"
-        ? "player2"
-        : "player1"
-    }
-  );
-}
-
-else if(guess < opponent.secret){
-
-  hintBox.innerText = "HIGHER";
-
-  await update(
-    ref(db, "rooms/" + roomId),
-    {
-      turn:
-        myRole === "player1"
-        ? "player2"
-        : "player1"
-    }
-  );
-}
-
-  else{
-
-    hintBox.innerText = "CORRECT";
-
-    gameEnded = true;
+    hintBox.innerText = "LOWER";
 
     await update(
       ref(db, "rooms/" + roomId),
       {
-        winner:myRole,
-        state:"ended"
+        turn:
+          myRole === "player1"
+          ? "player2"
+          : "player1"
+      }
+    );
+  }
+
+  else if(guess < opponent.secret){
+
+    hintBox.innerText = "HIGHER";
+
+    await update(
+      ref(db, "rooms/" + roomId),
+      {
+        turn:
+          myRole === "player1"
+          ? "player2"
+          : "player1"
+      }
+    );
+  }
+
+  else{
+
+    gameEnded = true;
+
+    hintBox.innerText = "CORRECT";
+
+    await update(
+      ref(db, "rooms/" + roomId),
+      {
+        state:"ended",
+        winner:myRole
       }
     );
 
@@ -298,7 +293,7 @@ else if(guess < opponent.secret){
 /* RESULT MODAL */
 /* ------------------------- */
 
-function showResult(win, attempts){
+function showResult(win, attempts=0){
 
   resultModal.classList.remove("hidden");
 
@@ -332,8 +327,7 @@ playAgainBtn.onclick = async ()=>{
     }
   );
 
-  playAgainBtn.innerText =
-    "Waiting...";
+  playAgainBtn.innerText = "Waiting...";
 };
 
 /* ------------------------- */
@@ -350,67 +344,62 @@ function listenRoom(){
 
       if(!data) return;
 
-      /* PLAYER 2 JOINED */
+      /* PLAYER JOINED */
 
       if(
-        data.state === "choosing"
-        && myRole === "player1"
+        data.state === "choosing" &&
+        myRole === "player1"
       ){
         showScreen("secret");
       }
 
-      /* BOTH READY */
+      /* START GAME */
 
       if(
-  myRole === "player1" &&
-  data.player1?.ready &&
-  data.player2?.ready &&
-  data.state === "choosing"
-){
+        myRole === "player1" &&
+        data.player1?.ready &&
+        data.player2?.ready &&
+        data.state === "choosing"
+      ){
 
-  const randomTurn =
-    Math.random() < 0.5
-    ? "player1"
-    : "player2";
+        const randomTurn =
+          Math.random() < 0.5
+          ? "player1"
+          : "player2";
 
-  await update(
-    ref(db, "rooms/" + roomId),
-    {
-      state:"playing",
-      turn:randomTurn
-    }
-  );
-}
+        await update(
+          ref(db, "rooms/" + roomId),
+          {
+            state:"playing",
+            turn:randomTurn
+          }
+        );
+      }
 
-      /* GAME START */
+      /* GAME SCREEN */
 
       if(data.state === "playing"){
 
-  showScreen("game");
+        showScreen("game");
+      }
 
-  hintBox.innerText =
-    "Make your guess";
-}
+      /* TURN SYSTEM */
 
-/* TURN SYSTEM */
+      if(data.turn === myRole){
 
-if(data.turn === myRole){
+        turnBox.innerText = "YOUR TURN";
 
-  turnBox.innerText =
-    "YOUR TURN";
+        guessBtn.disabled = false;
+      }
 
-  guessBtn.disabled = false;
-}
+      else{
 
-else{
+        turnBox.innerText = "OPPONENT TURN";
 
-  turnBox.innerText =
-    "OPPONENT TURN";
+        guessBtn.disabled = true;
+      }
 
-  guessBtn.disabled = true;
-}
-
-      /* OPPONENT ATTEMPTS */
+      /* ATTEMPTS */
 
       const opponent =
         myRole === "player1"
@@ -423,12 +412,12 @@ else{
           opponent.attempts || 0;
       }
 
-      /* GAME ENDED */
+      /* GAME END */
 
       if(
-        data.state === "ended"
-        && data.winner !== myRole
-        && !gameEnded
+        data.state === "ended" &&
+        data.winner !== myRole &&
+        !gameEnded
       ){
 
         gameEnded = true;
@@ -447,10 +436,9 @@ else{
 
         resultModal.classList.add("hidden");
 
-        playAgainBtn.innerText =
-          "PLAY AGAIN";
+        playAgainBtn.innerText = "PLAY AGAIN";
 
-        hintBox.innerText = "Waiting...";
+        hintBox.innerText = "Make your guess";
 
         myAttempts.innerText = "0";
 
@@ -465,9 +453,9 @@ else{
         await update(
           ref(db, "rooms/" + roomId),
           {
-            winner:null,
             state:"choosing",
             turn:null,
+            winner:null,
             player1:{
               ready:false,
               attempts:0,
@@ -486,16 +474,4 @@ else{
 
     }
   );
-}
-
-/* ------------------------- */
-/* ROOM CODE */
-/* ------------------------- */
-
-function generateRoomCode(){
-
-  return Math.random()
-    .toString(36)
-    .substring(2,7)
-    .toUpperCase();
 }
