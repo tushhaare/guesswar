@@ -42,6 +42,11 @@ const resultBox = document.getElementById("resultBox");
 
 const turnBox = document.getElementById("turnBox");
 
+const patternBox =
+  document.getElementById(
+    "patternBox"
+  );
+
 const myAttempts = document.getElementById("myAttempts");
 
 const enemyAttempts = document.getElementById("enemyAttempts");
@@ -115,6 +120,31 @@ function isValidNumber(number){
 /* ------------------------- */
 /* BULLS & COWS */
 /* ------------------------- */
+
+function generatePattern(
+  guess,
+  secret
+){
+
+  let pattern = [];
+
+  for(let i=0; i<4; i++){
+
+    if(guess[i] === secret[i]){
+
+      pattern.push(
+        guess[i]
+      );
+    }
+
+    else{
+
+      pattern.push("_");
+    }
+  }
+
+  return pattern.join(" ");
+}
 
 function calculateResult(guess, secret){
 
@@ -346,11 +376,30 @@ guessBtn.onclick = async ()=>{
   myAttempts.innerText =
     attempts;
 
+  const pattern =
+  generatePattern(
+    guess,
+    opponent.secret
+  );
+
+patternBox.innerText =
+  pattern;
+
+if(result.cows > 0){
+
   resultBox.innerText =
-    result.bulls +
-    " Bulls • " +
+    "🟧 " +
     result.cows +
-    " Cows";
+    " Cow" +
+    (result.cows > 1 ? "s" : "");
+
+}
+
+else{
+
+  resultBox.innerText =
+    "No Cows";
+}
 
   const history =
     data.history || [];
@@ -564,17 +613,16 @@ function listenRoom(){
     ${item.guess}
   </span>
 
-  <div class="result-badges">
+  <span class="history-result">
 
-    <div class="bull-box">
-      🟩 ${item.bulls}
-    </div>
+    ${
+      item.cows > 0
+      ? "🟧 " + item.cows + " Cow" +
+        (item.cows > 1 ? "s" : "")
+      : "No Cows"
+    }
 
-    <div class="cow-box">
-      🟧 ${item.cows}
-    </div>
-
-  </div>
+  </span>
 
 `;
 
