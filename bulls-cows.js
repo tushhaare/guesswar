@@ -271,7 +271,7 @@ localStorage.setItem(
       player2:{
         ready:false,
         attempts:0,
-        rematch:false
+        rematch:false,
       }
     }
   );
@@ -417,25 +417,25 @@ guessBtn.onclick = async ()=>{
     return;
   }
 
-  const opponentData =
-  myRole === "player1"
-  ? data.player2
-  : data.player1;
-
-if(opponentData){
-
-  if(opponentData.online === false){
-
-    turnBox.innerText =
-      "Opponent Disconnected";
-  }
-}
   
   const opponent =
     myRole === "player1"
     ? data.player2
     : data.player1;
 
+if(opponent){
+
+  if(opponent.online === false){
+
+    turnBox.innerText =
+      "Opponent Disconnected";
+
+    guessBtn.disabled = true;
+
+    return;
+  }
+}
+  
   const me =
     myRole === "player1"
     ? data.player1
@@ -472,8 +472,23 @@ if(opponentData){
     opponent.secret
   );
 
+const currentPattern =
+  patternBox.innerText.split(" ");
+
+const newPattern =
+  pattern.split(" ");
+
+for(let i=0; i<4; i++){
+
+  if(newPattern[i] !== "_"){
+
+    currentPattern[i] =
+      newPattern[i];
+  }
+}
+
 patternBox.innerText =
-  pattern;
+  currentPattern.join(" ");
 
 if(result.cows > 0){
 
@@ -782,14 +797,16 @@ function listenRoom(){
             player1:{
               ready:false,
               attempts:0,
-              rematch:false
-            },
+              rematch:false,
+           online:true
+},
 
-            player2:{
-              ready:false,
-              attempts:0,
-              rematch:false
-            }
+player2:{
+  ready:false,
+  attempts:0,
+  rematch:false,
+  online:true
+}
           }
         );
 
@@ -799,7 +816,10 @@ function listenRoom(){
     }
   );
 }
-if(inviteRoom){
+if(
+  inviteRoom &&
+  !localStorage.getItem("bullsRoom")
+){
 
   roomInput.value =
     inviteRoom;
