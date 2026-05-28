@@ -261,20 +261,55 @@ joinBtn.onclick = async ()=>{
 /* COPY ROOM */
 /* ------------------------- */
 
-copyBtn.onclick = ()=>{
+copyBtn.onclick = async ()=>{
 
-navigator.clipboard.writeText(
-  copyBtn.dataset.link
-);
-  
-  copyBtn.innerText = "Copied!";
+  const inviteLink =
+    copyBtn.dataset.link;
 
-  setTimeout(()=>{
+  const shareText =
+    "Jaldi join karlo 🎮\n\n" +
+    inviteLink;
+
+  /* MOBILE SHARE */
+
+  if(navigator.share){
+
+    try{
+
+      await navigator.share({
+
+        title:"Bulls & Cows",
+
+        text:shareText
+
+      });
+
+    }
+
+    catch(error){
+
+      console.log(error);
+    }
+  }
+
+  /* FALLBACK */
+
+  else{
+
+    navigator.clipboard.writeText(
+      inviteLink
+    );
 
     copyBtn.innerText =
-      "Copy Invite Link";
+      "Link Copied!";
 
-  },1500);
+    setTimeout(()=>{
+
+      copyBtn.innerText =
+        "Share Invite";
+
+    },1500);
+  }
 };
 
 /* ------------------------- */
