@@ -686,9 +686,10 @@ function listenRoom(){
       if(data.history){
 
         data.history
-          .slice()
-          .reverse()
-          .forEach(item=>{
+  .filter(item => item.by === myRole)
+  .slice()
+  .reverse()
+  .forEach(item=>{
 
             const div =
               document.createElement("div");
@@ -930,29 +931,3 @@ leaveBtn.onclick = async ()=>{
     "/guesswar/bulls-cows.html";
 };
 
-  gameEnded = false;
-
-  resultModal.classList.add(
-    "hidden"
-  );
-
-  historyList.innerHTML = "";
-
-  myAttempts.innerText = "0";
-
-  enemyAttempts.innerText = "0";
-
-  resultBox.innerText =
-    "No guesses yet";
-
-  patternBox.innerText =
-    "_ _ _ _";
-
-  secretInput.disabled = false;
-
-  readyBtn.disabled = false;
-
-  readyStatus.innerText = "";
-
-  showScreen("secret");
-};
