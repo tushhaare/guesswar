@@ -215,7 +215,7 @@ localStorage.setItem(
   roomCodeBox.innerText = roomId;
 const inviteLink =
   window.location.origin +
-  "/bulls-cows.html?room=" +
+  "/guesswar/bulls-cows.html?room=" +
   roomId;
 
 copyBtn.dataset.link =
