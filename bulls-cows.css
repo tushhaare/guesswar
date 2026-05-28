@@ -602,3 +602,29 @@ button:active{
 
   background:#7f1d1d;
 }
+
+
+
+#opponentReveal{
+
+  margin-top:14px;
+
+  background:#1e293b;
+
+  padding:14px;
+
+  border-radius:14px;
+
+  color:#facc15;
+
+  font-weight:bold;
+
+  text-align:center;
+}
+
+#opponentPattern{
+
+  color:white;
+
+  letter-spacing:6px;
+}
