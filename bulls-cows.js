@@ -75,6 +75,13 @@ let roomId = "";
 let myRole = "";
 
 let gameEnded = false;
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+const inviteRoom =
+  params.get("room");
 
 /* ------------------------- */
 /* SCREEN SYSTEM */
@@ -197,7 +204,14 @@ createBtn.onclick = async ()=>{
   );
 
   roomCodeBox.innerText = roomId;
+const inviteLink =
+  window.location.origin +
+  "/bulls-cows.html?room=" +
+  roomId;
 
+copyBtn.dataset.link =
+  inviteLink;
+  
   showScreen("waiting");
 
   listenRoom();
@@ -249,14 +263,16 @@ joinBtn.onclick = async ()=>{
 
 copyBtn.onclick = ()=>{
 
-  navigator.clipboard.writeText(roomId);
-
+navigator.clipboard.writeText(
+  copyBtn.dataset.link
+);
+  
   copyBtn.innerText = "Copied!";
 
   setTimeout(()=>{
 
     copyBtn.innerText =
-      "Copy Room Code";
+      "Copy Invite Link";
 
   },1500);
 };
@@ -707,4 +723,15 @@ function listenRoom(){
 
     }
   );
+}
+if(inviteRoom){
+
+  roomInput.value =
+    inviteRoom;
+
+  setTimeout(()=>{
+
+    joinBtn.click();
+
+  },500);
 }
