@@ -1,3 +1,4 @@
+
 import { db } from "./firebase-config.js";
 
 import {
@@ -47,25 +48,45 @@ const patternBox =
     "patternBox"
   );
 
-const myAttempts = document.getElementById("myAttempts");
+const myAttempts =
+  document.getElementById(
+    "myAttempts"
+  );
 
-const enemyAttempts = document.getElementById("enemyAttempts");
+const enemyAttempts =
+  document.getElementById(
+    "enemyAttempts"
+  );
 
 const mySecretNumber =
   document.getElementById(
     "mySecretNumber"
   );
 
-const historyList = document.getElementById("historyList");
+const historyList =
+  document.getElementById(
+    "historyList"
+  );
 
-const resultModal = document.getElementById("resultModal");
+const resultModal =
+  document.getElementById(
+    "resultModal"
+  );
 
-const resultTitle = document.getElementById("resultTitle");
+const resultTitle =
+  document.getElementById(
+    "resultTitle"
+  );
 
-const resultText = document.getElementById("resultText");
+const resultText =
+  document.getElementById(
+    "resultText"
+  );
 
-const playAgainBtn = document.getElementById("playAgainBtn");
-
+const playAgainBtn =
+  document.getElementById(
+    "playAgainBtn"
+  );
 
 const leaveBtn =
   document.getElementById(
@@ -81,6 +102,11 @@ let roomId = "";
 let myRole = "";
 
 let gameEnded = false;
+
+/* ------------------------- */
+/* INVITE LINK */
+/* ------------------------- */
+
 const params =
   new URLSearchParams(
     window.location.search
@@ -89,17 +115,34 @@ const params =
 const inviteRoom =
   params.get("room");
 
+if(inviteRoom){
+
+  roomInput.value =
+    inviteRoom;
+
+  history.replaceState(
+    {},
+    "",
+    window.location.pathname
+  );
+}
+
 /* ------------------------- */
 /* SCREEN SYSTEM */
 /* ------------------------- */
 
 function showScreen(screenName){
 
-  Object.values(screens).forEach(screen=>{
-    screen.classList.remove("active");
-  });
+  Object.values(screens).forEach(
+    screen=>{
+      screen.classList.remove(
+        "active"
+      );
+    }
+  );
 
-  screens[screenName].classList.add("active");
+  screens[screenName]
+    .classList.add("active");
 }
 
 /* ------------------------- */
@@ -121,6 +164,7 @@ function generateRoomCode(){
 function isValidNumber(number){
 
   if(number.length !== 4){
+
     return false;
   }
 
@@ -131,7 +175,7 @@ function isValidNumber(number){
 }
 
 /* ------------------------- */
-/* BULLS & COWS */
+/* PATTERN */
 /* ------------------------- */
 
 function generatePattern(
@@ -159,7 +203,14 @@ function generatePattern(
   return pattern.join(" ");
 }
 
-function calculateResult(guess, secret){
+/* ------------------------- */
+/* BULLS COWS */
+/* ------------------------- */
+
+function calculateResult(
+  guess,
+  secret
+){
 
   let bulls = 0;
   let cows = 0;
@@ -171,13 +222,18 @@ function calculateResult(guess, secret){
       bulls++;
     }
 
-    else if(secret.includes(guess[i])){
+    else if(
+      secret.includes(guess[i])
+    ){
 
       cows++;
     }
   }
 
-  return { bulls, cows };
+  return {
+    bulls,
+    cows
+  };
 }
 
 /* ------------------------- */
@@ -187,13 +243,17 @@ function calculateResult(guess, secret){
 createBtn.onclick = async ()=>{
 
   gameEnded = false;
-  
-  roomId = generateRoomCode();
+
+  roomId =
+    generateRoomCode();
 
   myRole = "player1";
 
   await set(
-    ref(db, "bullsRooms/" + roomId),
+    ref(
+      db,
+      "bullsRooms/" + roomId
+    ),
     {
       state:"waiting",
 
@@ -211,15 +271,17 @@ createBtn.onclick = async ()=>{
     }
   );
 
-  roomCodeBox.innerText = roomId;
-const inviteLink =
-  window.location.origin +
-  "/guesswar/bulls-cows.html?room=" +
-  roomId;
+  roomCodeBox.innerText =
+    roomId;
 
-copyBtn.dataset.link =
-  inviteLink;
-  
+  const inviteLink =
+    window.location.origin +
+    "/guesswar/bulls-cows.html?room=" +
+    roomId;
+
+  copyBtn.dataset.link =
+    inviteLink;
+
   showScreen("waiting");
 
   listenRoom();
@@ -232,13 +294,17 @@ copyBtn.dataset.link =
 joinBtn.onclick = async ()=>{
 
   gameEnded = false;
-  
+
   roomId =
     roomInput.value.toUpperCase();
 
-  const snapshot = await get(
-    ref(db, "bullsRooms/" + roomId)
-  );
+  const snapshot =
+    await get(
+      ref(
+        db,
+        "bullsRooms/" + roomId
+      )
+    );
 
   if(!snapshot.exists()){
 
@@ -248,16 +314,19 @@ joinBtn.onclick = async ()=>{
   }
 
   myRole = "player2";
-  
+
   await update(
-    ref(db, "bullsRooms/" + roomId),
+    ref(
+      db,
+      "bullsRooms/" + roomId
+    ),
     {
       state:"choosing",
 
       player2:{
         ready:false,
         attempts:0,
-        rematch:false,
+        rematch:false
       }
     }
   );
@@ -268,7 +337,7 @@ joinBtn.onclick = async ()=>{
 };
 
 /* ------------------------- */
-/* COPY ROOM */
+/* SHARE */
 /* ------------------------- */
 
 copyBtn.onclick = async ()=>{
@@ -277,21 +346,16 @@ copyBtn.onclick = async ()=>{
     copyBtn.dataset.link;
 
   const shareText =
-    "Jaldi join karlo 🎮\n\n" +
+    "Join my Bulls & Cows game 🎮\n\n" +
     inviteLink;
-
-  /* MOBILE SHARE */
 
   if(navigator.share){
 
     try{
 
       await navigator.share({
-
         title:"Bulls & Cows",
-
         text:shareText
-
       });
 
     }
@@ -302,23 +366,13 @@ copyBtn.onclick = async ()=>{
     }
   }
 
-  /* FALLBACK */
-
   else{
 
     navigator.clipboard.writeText(
       inviteLink
     );
 
-    copyBtn.innerText =
-      "Link Copied!";
-
-    setTimeout(()=>{
-
-      copyBtn.innerText =
-        "Share Invite";
-
-    },1500);
+    alert("Invite Link Copied");
   }
 };
 
@@ -356,6 +410,9 @@ readyBtn.onclick = async ()=>{
     }
   );
 
+  mySecretNumber.innerText =
+    secret;
+
   secretInput.value = "";
 
   secretInput.disabled = true;
@@ -364,8 +421,6 @@ readyBtn.onclick = async ()=>{
 
   readyStatus.innerText =
     "Waiting for opponent...";
-  mySecretNumber.innerText =
-  secret;
 };
 
 /* ------------------------- */
@@ -388,11 +443,16 @@ guessBtn.onclick = async ()=>{
     return;
   }
 
-  const snapshot = await get(
-    ref(db, "bullsRooms/" + roomId)
-  );
+  const snapshot =
+    await get(
+      ref(
+        db,
+        "bullsRooms/" + roomId
+      )
+    );
 
-  const data = snapshot.val();
+  const data =
+    snapshot.val();
 
   if(data.turn !== myRole){
 
@@ -402,12 +462,11 @@ guessBtn.onclick = async ()=>{
     return;
   }
 
-  
   const opponent =
     myRole === "player1"
     ? data.player2
     : data.player1;
-  
+
   const me =
     myRole === "player1"
     ? data.player1
@@ -421,6 +480,8 @@ guessBtn.onclick = async ()=>{
       guess,
       opponent.secret
     );
+
+  /* UPDATE ATTEMPTS */
 
   await update(
     ref(
@@ -438,88 +499,102 @@ guessBtn.onclick = async ()=>{
   myAttempts.innerText =
     attempts;
 
+  /* PATTERN */
+
   const pattern =
-  generatePattern(
-    guess,
-    opponent.secret
-  );
+    generatePattern(
+      guess,
+      opponent.secret
+    );
 
-const currentPattern =
-  patternBox.innerText.split(" ");
+  const currentPattern =
+    patternBox.innerText
+      .split(" ");
 
-const newPattern =
-  pattern.split(" ");
+  const newPattern =
+    pattern.split(" ");
 
-for(let i=0; i<4; i++){
+  for(let i=0; i<4; i++){
 
-  if(newPattern[i] !== "_"){
+    if(newPattern[i] !== "_"){
 
-    currentPattern[i] =
-      newPattern[i];
+      currentPattern[i] =
+        newPattern[i];
+    }
   }
-}
 
-patternBox.innerText =
-  currentPattern.join(" ");
+  patternBox.innerText =
+    currentPattern.join(" ");
 
-if(result.cows > 0){
+  /* COWS */
 
-  resultBox.innerText =
-    "🟧 " +
-    result.cows +
-    " Cow" +
-    (result.cows > 1 ? "s" : "");
+  if(result.cows > 0){
 
-}
+    resultBox.innerText =
+      "🟧 " +
+      result.cows +
+      " Cow" +
+      (result.cows > 1
+      ? "s"
+      : "");
 
-else{
+  }
 
-  resultBox.innerText =
-    "No Cows";
-}
+  else{
+
+    resultBox.innerText =
+      "No Cows";
+  }
+
+  /* HISTORY */
 
   const history =
     data.history || [];
 
   history.push({
+
     by:myRole,
+
     guess:guess,
-    bulls:result.bulls,
+
     cows:result.cows
   });
 
   await update(
-    ref(db, "bullsRooms/" + roomId),
+    ref(
+      db,
+      "bullsRooms/" + roomId
+    ),
     {
-      history:history
+      history:history,
+
+      turn:
+        myRole === "player1"
+        ? "player2"
+        : "player1"
     }
   );
+
+  /* WIN */
 
   if(result.bulls === 4){
 
     gameEnded = true;
 
     await update(
-      ref(db, "bullsRooms/" + roomId),
+      ref(
+        db,
+        "bullsRooms/" + roomId
+      ),
       {
         state:"ended",
         winner:myRole
       }
     );
 
-    showResult(true, attempts);
-  }
-
-  else{
-
-    await update(
-      ref(db, "bullsRooms/" + roomId),
-      {
-        turn:
-          myRole === "player1"
-          ? "player2"
-          : "player1"
-      }
+    showResult(
+      true,
+      attempts
     );
   }
 
@@ -527,12 +602,17 @@ else{
 };
 
 /* ------------------------- */
-/* RESULT MODAL */
+/* RESULT */
 /* ------------------------- */
 
-function showResult(win, attempts=0){
+function showResult(
+  win,
+  attempts = 0
+){
 
-  resultModal.classList.remove("hidden");
+  resultModal.classList.remove(
+    "hidden"
+  );
 
   if(win){
 
@@ -540,7 +620,7 @@ function showResult(win, attempts=0){
       "YOU WON";
 
     resultText.innerText =
-      "Attempts Used: " +
+      "Attempts: " +
       attempts;
   }
 
@@ -550,12 +630,12 @@ function showResult(win, attempts=0){
       "YOU LOST";
 
     resultText.innerText =
-      "Opponent guessed correctly.";
+      "Opponent guessed first";
   }
 }
 
 /* ------------------------- */
-/* PLAY AGAIN */
+/* REMATCH */
 /* ------------------------- */
 
 playAgainBtn.onclick = async ()=>{
@@ -584,11 +664,15 @@ playAgainBtn.onclick = async ()=>{
 function listenRoom(){
 
   onValue(
-    ref(db, "bullsRooms/" + roomId),
+    ref(
+      db,
+      "bullsRooms/" + roomId
+    ),
 
-    async (snapshot)=>{
+    async snapshot=>{
 
-      const data = snapshot.val();
+      const data =
+        snapshot.val();
 
       if(!data) return;
 
@@ -628,7 +712,7 @@ function listenRoom(){
         );
       }
 
-      /* GAME START */
+      /* GAME SCREEN */
 
       if(data.state === "playing"){
 
@@ -660,10 +744,21 @@ function listenRoom(){
         ? data.player2
         : data.player1;
 
+      const me =
+        myRole === "player1"
+        ? data.player1
+        : data.player2;
+
       if(opponent){
 
         enemyAttempts.innerText =
           opponent.attempts || 0;
+      }
+
+      if(me){
+
+        myAttempts.innerText =
+          me.attempts || 0;
       }
 
       /* HISTORY */
@@ -673,13 +768,18 @@ function listenRoom(){
       if(data.history){
 
         data.history
-  .filter(item => item.by === myRole)
-  .slice()
-  .reverse()
-  .forEach(item=>{
+          .filter(
+            item =>
+            item.by === myRole
+          )
+          .slice()
+          .reverse()
+          .forEach(item=>{
 
             const div =
-              document.createElement("div");
+              document.createElement(
+                "div"
+              );
 
             div.classList.add(
               "history-item"
@@ -687,28 +787,34 @@ function listenRoom(){
 
             div.innerHTML = `
 
-  <span class="guess-number">
-    ${item.guess}
-  </span>
+              <span class="guess-number">
+                ${item.guess}
+              </span>
 
-  <span class="history-result">
+              <span class="history-result">
 
-    ${
-      item.cows > 0
-      ? "🟧 " + item.cows + " Cow" +
-        (item.cows > 1 ? "s" : "")
-      : "No Cows"
-    }
+                ${
+                  item.cows > 0
+                  ? "🟧 " +
+                    item.cows +
+                    " Cow" +
+                    (item.cows > 1
+                    ? "s"
+                    : "")
+                  : "No Cows"
+                }
 
-  </span>
+              </span>
 
-`;
+            `;
 
-            historyList.appendChild(div);
+            historyList.appendChild(
+              div
+            );
           });
       }
 
-      /* GAME END */
+      /* LOSE */
 
       if(
         data.state === "ended" &&
@@ -737,20 +843,31 @@ function listenRoom(){
         playAgainBtn.innerText =
           "PLAY AGAIN";
 
+        patternBox.innerText =
+          "_ _ _ _";
+
         resultBox.innerText =
-          "Waiting for first move...";
-
-        myAttempts.innerText = "0";
-
-        enemyAttempts.innerText = "0";
+          "No guesses yet";
 
         historyList.innerHTML = "";
 
-        secretInput.disabled = false;
+        myAttempts.innerText =
+          "0";
 
-        readyBtn.disabled = false;
+        enemyAttempts.innerText =
+          "0";
 
-        readyStatus.innerText = "";
+        mySecretNumber.innerText =
+          "••••";
+
+        secretInput.disabled =
+          false;
+
+        readyBtn.disabled =
+          false;
+
+        readyStatus.innerText =
+          "";
 
         await update(
           ref(
@@ -769,32 +886,28 @@ function listenRoom(){
             player1:{
               ready:false,
               attempts:0,
-              rematch:false,
-},
+              rematch:false
+            },
 
-player2:{
-  ready:false,
-  attempts:0,
-  rematch:false,
-}
+            player2:{
+              ready:false,
+              attempts:0,
+              rematch:false
+            }
           }
         );
 
         showScreen("secret");
       }
-
     }
   );
 }
 
-if(inviteRoom){
+/* ------------------------- */
+/* LEAVE */
+/* ------------------------- */
 
-  roomInput.value =
-    inviteRoom;
+leaveBtn.onclick = ()=>{
 
-  history.replaceState(
-    {},
-    "",
-    window.location.pathname
-  );
-}
+  location.reload();
+};
