@@ -186,6 +186,8 @@ function calculateResult(guess, secret){
 
 createBtn.onclick = async ()=>{
 
+  gameEnded = false;
+  
   roomId = generateRoomCode();
 
   myRole = "player1";
@@ -229,6 +231,8 @@ copyBtn.dataset.link =
 
 joinBtn.onclick = async ()=>{
 
+  gameEnded = false;
+  
   roomId =
     roomInput.value.toUpperCase();
 
@@ -803,35 +807,10 @@ if(inviteRoom){
 
   roomInput.value =
     inviteRoom;
+
+  history.replaceState(
+    {},
+    "",
+    window.location.pathname
+  );
 }
-
-leaveBtn.onclick = async ()=>{
-
-  if(roomId && myRole){
-
-    await update(
-      ref(
-        db,
-        "bullsRooms/" +
-        roomId +
-        "/" +
-        myRole
-      ),
-      {
-        online:false
-      }
-    );
-  }
-
-  localStorage.removeItem(
-    "bullsRoom"
-  );
-
-  localStorage.removeItem(
-    "bullsRole"
-  );
-
-  window.location.href =
-    "/guesswar/bulls-cows.html";
-};
-
