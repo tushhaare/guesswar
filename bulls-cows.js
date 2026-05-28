@@ -189,15 +189,6 @@ createBtn.onclick = async ()=>{
   roomId = generateRoomCode();
 
   myRole = "player1";
-  localStorage.setItem(
-  "bullsRoom",
-  roomId
-);
-
-localStorage.setItem(
-  "bullsRole",
-  myRole
-);
 
   await set(
     ref(db, "bullsRooms/" + roomId),
@@ -253,15 +244,6 @@ joinBtn.onclick = async ()=>{
   }
 
   myRole = "player2";
-localStorage.setItem(
-  "bullsRoom",
-  roomId
-);
-
-localStorage.setItem(
-  "bullsRole",
-  myRole
-);
   
   await update(
     ref(db, "bullsRooms/" + roomId),
@@ -816,110 +798,12 @@ player2:{
     }
   );
 }
-if(
-  inviteRoom &&
-  !localStorage.getItem("bullsRoom")
-){
+
+if(inviteRoom){
 
   roomInput.value =
     inviteRoom;
-
-  setTimeout(()=>{
-
-    joinBtn.click();
-
-  },500);
 }
-
-window.addEventListener(
-  "beforeunload",
-  async ()=>{
-
-    const savedRoom =
-      localStorage.getItem(
-        "bullsRoom"
-      );
-
-    const savedRole =
-      localStorage.getItem(
-        "bullsRole"
-      );
-
-    if(savedRoom && savedRole){
-
-      await update(
-        ref(
-          db,
-          "bullsRooms/" +
-          savedRoom +
-          "/" +
-          savedRole
-        ),
-        {
-          online:false
-        }
-      );
-    }
-  }
-);
-
-const savedRoom =
-  localStorage.getItem(
-    "bullsRoom"
-  );
-
-const savedRole =
-  localStorage.getItem(
-    "bullsRole"
-  );
-
-if(savedRoom && savedRole){
-
-  roomId = savedRoom;
-
-  myRole = savedRole;
-
-  update(
-    ref(
-      db,
-      "bullsRooms/" +
-      roomId +
-      "/" +
-      myRole
-    ),
-    {
-      online:true
-    }
-  );
-
-  listenRoom();
-
-  get(
-    ref(
-      db,
-      "bullsRooms/" + roomId
-    )
-  ).then(snapshot=>{
-
-    const data = snapshot.val();
-
-    if(!data) return;
-
-    if(
-      data.state === "playing" ||
-      data.state === "ended"
-    ){
-
-      showScreen("game");
-    }
-
-    else{
-
-      showScreen("secret");
-    }
-  });
-}
-
 
 leaveBtn.onclick = async ()=>{
 
