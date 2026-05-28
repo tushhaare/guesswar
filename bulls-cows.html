@@ -1,1 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Bulls & Cows Multiplayer</title>
+
+  <link
+    rel="stylesheet"
+    href="bulls-cows.css"
+  />
+
+</head>
+
+<body>
+
+  <div class="background-glow"></div>
+
+  <div class="app">
+
+    <!-- HOME SCREEN -->
+
+    <section
+      id="homeScreen"
+      class="screen active"
+    >
+
+      <div class="logo-box">
+
+        <h1>BULLS & COWS</h1>
+
+        <p>
+          Multiplayer Strategy Battle
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <button id="createBtn">
+          Create Room
+        </button>
+
+        <div class="divider">
+          OR
+        </div>
+
+        <input
+          type="text"
+          id="roomInput"
+          maxlength="5"
+          placeholder="Enter Room Code"
+        />
+
+        <button id="joinBtn">
+          Join Room
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- WAITING SCREEN -->
+
+    <section
+      id="waitingScreen"
+      class="screen"
+    >
+
+      <div class="card center">
+
+        <h2>
+          ROOM CREATED
+        </h2>
+
+        <div id="roomCodeBox">
+          XXXXX
+        </div>
+
+        <button id="copyBtn">
+          Copy Room Code
+        </button>
+
+        <div class="loader"></div>
+
+        <p>
+          Waiting for opponent...
+        </p>
+
+      </div>
+
+    </section>
+
+    <!-- SECRET NUMBER SCREEN -->
+
+    <section
+      id="secretScreen"
+      class="screen"
+    >
+
+      <div class="card">
+
+        <h2>
+          Choose Secret Number
+        </h2>
+
+        <p class="subtitle">
+          4 unique digits only
+        </p>
+
+        <input
+          type="password"
+          id="secretInput"
+          maxlength="4"
+          placeholder="Enter Secret Number"
+        />
+
+        <button id="readyBtn">
+          READY
+        </button>
+
+        <p id="readyStatus"></p>
+
+      </div>
+
+    </section>
+
+    <!-- GAME SCREEN -->
+
+    <section
+      id="gameScreen"
+      class="screen"
+    >
+
+      <!-- TOP -->
+
+      <div class="top-bar">
+
+        <div class="stat-card">
+
+          <span>Your Attempts</span>
+
+          <h3 id="myAttempts">
+            0
+          </h3>
+
+        </div>
+
+        <div class="stat-card">
+
+          <span>Opponent Attempts</span>
+
+          <h3 id="enemyAttempts">
+            0
+          </h3>
+
+        </div>
+
+      </div>
+
+      <!-- MAIN CARD -->
+
+      <div class="main-card">
+
+        <h2>
+          Guess Opponent Number
+        </h2>
+
+        <div id="turnBox">
+          Waiting...
+        </div>
+
+        <input
+          type="text"
+          id="guessInput"
+          maxlength="4"
+          placeholder="Enter 4 Digits"
+        />
+
+        <button id="guessBtn">
+          GUESS
+        </button>
+
+        <div id="resultBox">
+          Waiting for first move...
+        </div>
+
+      </div>
+
+      <!-- HISTORY -->
+
+      <div class="history-card">
+
+        <h2>
+          Guess History
+        </h2>
+
+        <div id="historyList">
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- RESULT MODAL -->
+
+  <div
+    id="resultModal"
+    class="modal hidden"
+  >
+
+    <div class="modal-content">
+
+      <h1 id="resultTitle">
+        YOU WON
+      </h1>
+
+      <p id="resultText">
+        Great Job!
+      </p>
+
+      <button id="playAgainBtn">
+        PLAY AGAIN
+      </button>
+
+    </div>
+
+  </div>
+
+  <script
+    type="module"
+    src="bulls-cows.js"
+  ></script>
+
+</body>
+
+</html>
