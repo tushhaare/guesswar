@@ -304,6 +304,29 @@ button:active{
   color:#38bdf8;
 }
 
+#secretDisplay{
+
+  background:#0f172a;
+
+  padding:14px;
+
+  border-radius:16px;
+
+  margin-bottom:20px;
+
+  font-size:18px;
+
+  text-align:center;
+
+  color:#38bdf8;
+
+  font-weight:bold;
+}
+
+#mySecretNumber{
+  color:white;
+}
+
 /* GAME */
 
 .main-card{
